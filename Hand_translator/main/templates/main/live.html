@@ -1,0 +1,45 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Live Video Feed{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'main/css/live.css' %}">
+{% endblock %}
+
+{% block content %}
+<section id="home">
+    <div class="hero">
+        <h1>Live Video</h1>
+    </div>
+</section>
+
+<section class="main-content">
+    <div class="container">
+        <div class="left-column">
+            <h2>Live Video Feed</h2>
+            <img src="{% url 'video_feed' %}" alt="Live video feed" />
+        </div>
+        <div class="right-column">
+            <h2>Transcript</h2>
+            <div id="transcript"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const transcriptElement = document.getElementById('transcript');
+    const eventSource = new EventSource("{% url 'stream_transcript' %}");
+
+    eventSource.onmessage = function(event) {
+        transcriptElement.innerHTML += event.data;
+        transcriptElement.scrollTop = transcriptElement.scrollHeight;
+    };
+
+    eventSource.onerror = function(event) {
+        console.error("EventSource failed:", event);
+        eventSource.close();
+    };
+</script>
+{% endblock %}

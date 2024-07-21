@@ -8,10 +8,17 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import matplotlib.pyplot as plt
 from keras.initializers import Orthogonal
 import pickle
+from django.conf import settings
+
+
+model1_path = settings.MODEL1_PATH
+model1_encoder = settings.MODEL1_ENCODER
+
+
 
 
 custom_objects = {'Orthogonal': Orthogonal}
-loaded_model = tf.keras.models.load_model('Models/sign_language_letter_model_2.h5', custom_objects=custom_objects)
+loaded_model = tf.keras.models.load_model(model1_path, custom_objects=custom_objects)
 
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
@@ -165,7 +172,7 @@ def preprocess_landmarks(df):
     return left_hand_data, right_hand_data, pose_data
 
 
-with open('Models/label_encoder_letter.pkl', 'rb') as file:
+with open(model1_encoder, 'rb') as file:
     label_encoder = pickle.load(file)
 
 
@@ -207,8 +214,12 @@ def generate_frames():
                     if confidence > 0.95:
                         print(f"Predicted sign: {predicted_class_label} with confidence {confidence:.2f}")
 
+                        with open('predicted_labels.txt', 'a') as file:
+                            file.write(str(predicted_class_label))
+
                     # Display sign label on frame
-                    cv2.putText(frame, str(predicted_class_label), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    # cv2.putText(frame, str(predicted_class_label), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    
                 else:
                     print("Prediction contains NaN values")
 
