@@ -9,7 +9,9 @@ import matplotlib.pyplot as plt
 from keras.initializers import Orthogonal
 import pickle
 from django.conf import settings
-
+import cv2
+import numpy as np
+import time
 
 model1_path = settings.MODEL1_PATH
 model1_encoder = settings.MODEL1_ENCODER
@@ -178,7 +180,13 @@ with open(model1_encoder, 'rb') as file:
 
 camera = cv2.VideoCapture(0)
 
+
+
 def generate_frames():
+    prev_time = time.time()
+    last_prediction_time = time.time()
+    no_prediction_counter = 0
+
     while True:
         success, frame = camera.read()
         if not success:
@@ -190,40 +198,47 @@ def generate_frames():
             # Extract landmarks using MediaPipe
             left_hand, right_hand, pose, face = extract_landmarks_mediapipe(frame)
 
-            if left_hand or right_hand:
-                # Preprocess landmarks
-                df = landmarks_to_df(left_hand, right_hand, pose, face, header)
-                left_hand_input, right_hand_input, pose_input=preprocess_landmarks(df)
-                
+            current_time = time.time()
+            if current_time - prev_time >= 1:  # Process frame every second
+                prev_time = current_time
 
-                # Debug: Print the shape of the input to the model
+                if left_hand or right_hand:
+                    # Preprocess landmarks
+                    df = landmarks_to_df(left_hand, right_hand, pose, face, header)
+                    left_hand_input, right_hand_input, pose_input = preprocess_landmarks(df)
 
-                # Make prediction
-                prediction = loaded_model.predict([left_hand_input, right_hand_input, pose_input])
+                    # Make prediction
+                    prediction = loaded_model.predict([left_hand_input, right_hand_input, pose_input])
 
-                if not np.isnan(prediction).any():
-                    # Convert prediction indices to sign labels using label encoder
-                    # sign_labels = label_encoder.inverse_transform(np.argmax(prediction, axis=1))
-                    # sign_label = sign_labels[0]  # Assuming single prediction per frame
-                    predicted_class_index = np.argmax(prediction, axis=1)
-                    predicted_class_label = label_encoder.inverse_transform(predicted_class_index)
-                    
-                    confidence = prediction[0, predicted_class_index][0]
+                    if not np.isnan(prediction).any():
+                        predicted_class_index = np.argmax(prediction, axis=1)
+                        predicted_class_label = label_encoder.inverse_transform(predicted_class_index)
+                        confidence = prediction[0, predicted_class_index][0]
 
-                    # Print the class name if confidence is above 0.7
-                    if confidence > 0.95:
-                        print(f"Predicted sign: {predicted_class_label} with confidence {confidence:.2f}")
+                        if confidence > 0.95:
+                            no_prediction_counter = 0
+                            last_prediction_time = current_time
+                            label = predicted_class_label[0]  # Assuming single prediction per frame
+                            
+                            print(f"Predicted sign: {label} with confidence {confidence:.2f}")
 
-                        with open('predicted_labels.txt', 'a') as file:
-                            file.write(str(predicted_class_label))
+                            with open('predicted_labels.txt', 'a') as file:
+                                file.write(label)
 
-                    # Display sign label on frame
-                    # cv2.putText(frame, str(predicted_class_label), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                    
+                    else:
+                        print("Prediction contains NaN values")
+
                 else:
-                    print("Prediction contains NaN values")
+                    if current_time - last_prediction_time >= 3:
+                        no_prediction_counter += 1
+                        last_prediction_time = current_time
+                        with open('predicted_labels.txt', 'a') as file:
+                            file.write(' ')
 
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
+            
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+

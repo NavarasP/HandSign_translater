@@ -2,44 +2,94 @@
 {% load static %}
 
 {% block title %}Live Video Feed{% endblock %}
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'main/css/live.css' %}">
-{% endblock %}
 
 {% block content %}
-<section id="home">
-    <div class="hero">
-        <h1>Live Video</h1>
-    </div>
-</section>
 
-<section class="main-content">
-    <div class="container">
+<div class="split-screen">
         <div class="left-column">
             <h2>Live Video Feed</h2>
             <img src="{% url 'video_feed' %}" alt="Live video feed" />
         </div>
         <div class="right-column">
             <h2>Transcript</h2>
-            <div id="transcript"></div>
+            <pre id="predictions" ></pre>
+            <div class="button-container">
+                <button id="downloadTxt" class="download-btn">Download Text</button>
+                <button id="downloadAudio" class="download-btn">Download Audio</button>
+            </div>
         </div>
     </div>
-</section>
-{% endblock %}
+</div>
 
-{% block extra_js %}
+
+
+
 <script>
-    const transcriptElement = document.getElementById('transcript');
-    const eventSource = new EventSource("{% url 'stream_transcript' %}");
+    function startEventSource() {
+        console.log("Attempting to create EventSource");
 
-    eventSource.onmessage = function(event) {
-        transcriptElement.innerHTML += event.data;
-        transcriptElement.scrollTop = transcriptElement.scrollHeight;
-    };
+        const url = "{% url 'stream_predictions' %}";
+        console.log("EventSource URL:", url);
 
-    eventSource.onerror = function(event) {
-        console.error("EventSource failed:", event);
-        eventSource.close();
-    };
+        try {
+            const eventSource = new EventSource(url);
+
+            eventSource.onmessage = function(event) {
+                console.log("Message received:", event.data);
+                document.getElementById('predictions').innerText = event.data;
+            };
+
+            eventSource.onerror = function(event) {
+                console.error("EventSource error:", event);
+                // Attempt to reconnect after 1 second
+                eventSource.close();
+                setTimeout(startEventSource, 1000);
+            };
+
+            eventSource.onopen = function(event) {
+                console.log("EventSource connection opened:", event);
+            };
+
+        } catch (error) {
+            console.error("Error creating EventSource:", error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', startEventSource);
+
+
+    document.getElementById('downloadTxt').addEventListener('click', function() {
+        fetch('{% url "download_txt" %}')
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'transcript.txt';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('downloadAudio').addEventListener('click', function() {
+        fetch('{% url "download_audio" %}')
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'audio.mp3';  // or whatever file extension is appropriate
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error('Error:', error));
+    });
 </script>
+
+
 {% endblock %}

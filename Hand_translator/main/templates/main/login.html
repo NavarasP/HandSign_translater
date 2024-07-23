@@ -3,31 +3,29 @@
 
 {% block title %}Login - ASL Sign Language Translation{% endblock %}
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
-{% endblock %}
 
 {% block content %}
-<div class="login-container">
-    <video autoplay loop muted class="background-video">
-        <source src="{% static 'main/videos/Hello.mp4' %}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    
-    <div class="form-container">
-        <div class="form-wrapper">
+<div class="split-screen">
+    <div class="left-side">
+        <video autoplay loop muted  width="50%" height="auto" >
+            <source src="{% static 'main/videos/Hello.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+            </video>
+    </div>
+    <div class="right-side">
+        <div class="login-form">
             <h2>Login</h2>
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" name="username" id="username" required>
+                    <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" required>
+                    <input type="password" id="password" name="password" required>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit" class="download-btn">Login</button>
             </form>
         </div>
     </div>
