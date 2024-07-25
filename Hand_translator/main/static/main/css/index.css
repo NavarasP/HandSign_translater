@@ -1,0 +1,308 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding-top: 60px; /* Add padding to account for fixed header */
+    color: #333;
+    background-color: #e0e0e0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #007bff;
+}
+
+h2 {
+    color: #0056b3;
+}
+
+/* Header and Navigation */
+header {
+    background: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav-list li {
+    margin-right: 20px;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.nav-list a:hover {
+    color: #007bff;
+}
+
+/* Footer */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+/* Image Gallery */
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 2rem;
+}
+
+.image-gallery img {
+    width: 500px;
+    height: auto;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+
+.split-screen {
+    display: flex;
+    height: 100vh;
+}
+
+/* Live Video Page */
+.hero {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.main-content {
+    padding: 2rem 0;
+}
+
+.container.flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-column, .right-column {
+    flex-basis: 48%;
+    justify-content: center;
+    align-items: center;
+}
+
+#predictions {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 1rem;
+    height: 400px;
+    overflow-y: auto;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+/* Add this to the existing CSS file */
+
+pre {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Button styles */
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.download-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+    background-color: #0056b3;
+}
+
+.download-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+
+/* Login Page */
+
+
+.left-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.right-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+.login-form {
+    width: 300px;
+}
+
+
+
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* File upload styles */
+.upload-section, .response-section {
+    padding: 2rem 0;
+}
+
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.file-input-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.file-input-label {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px 20px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.upload-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.upload-btn:hover {
+    background-color: #0056b3;
+}
+
+.preview-container {
+    margin-top: 20px;
+}
+
+.preview-container img,
+.preview-container video {
+    max-width: 100%;
+    max-height: 400px;
+}
+
+.result-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-list {
+        flex-direction: column;
+    }
+    
+    .nav-list li {
+        margin: 10px 0;
+    }
+    
+    body {
+        padding-top: 120px; /* Increase padding for mobile to account for taller header */
+    }
+    
+    .container.flex {
+        flex-direction: column;
+    }
+    
+    .left-column, .right-column {
+        flex-basis: 100%;
+        margin-bottom: 2rem;
+    }
+
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .download-btn {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+}
