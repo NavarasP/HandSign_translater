@@ -1,16 +1,14 @@
+import os
+import time
+import logging
+import tempfile
+from gtts import gTTS
 from django.shortcuts import render
+from django.http import HttpResponse
 from main.functions import generate_frames
 from django.http import StreamingHttpResponse
-import logging
-import os
 
 
-
-import time
-
-from django.http import HttpResponse
-from gtts import gTTS
-import tempfile
 
 
 def home(request):
