@@ -1,37 +1,99 @@
-<!DOCTYPE html>
+
+
+
+
+
+
+<!doctype html>
 <html lang="en">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Matemasie&family=Nerko+One&family=Quicksand:wght@300..700&display=swap');
+</style>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'main/css/index.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- <title>Hello, world!</title> -->
+    <title>{% block title %}{% endblock %}</title>
+
 </head>
-<!DOCTYPE html>
-<html lang="en">
 
 <body>
-    <header>
-        <nav>
-            <ul class="nav-list">
-                <li><a href="{% url 'home' %}" >Home</a></li>
-                
 
-                <li><a href="{% url 'upload_image' %}">Image</a></li>
-                <li><a href="{% url 'upload_video' %}" >Video</a></li>
-                <li><a href="{% url 'live_video' %}">Live</a></li>
 
-                <li><a href="{% url 'login' %}">Login</a></li>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light px-4" style="font-family: Quicksand, sans-serif;
+    font-weight: 800;
+    font-style: normal;">
+        <a class="navbar-brand text-dark" href="{% url 'home' %}">HOME</a>
+        <!-- <a class="navbar-brand text-dark" href="#about-asl">ABOUT</a> -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <span class="navbar-nav mr-auto">
+            </span>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'upload_image' %}">IMAGE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'upload_video' %}">VIDEO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'live_video' %}">LIVE</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link text-white" href="#"><span class="badge rounded-pill p-2 bg-dark">LOGIN</span>
+                    </a>
+                </li> -->
             </ul>
-        </nav>
-    </header>
+        </div>
+    </nav>
+
+
     <main id="main-content">
         {% block content %}
         {% endblock %}
     </main>
-    <footer>
-        <p class="copyright">&copy; 2024 ASL Sign Language Translation. All rights reserved.</p>
+
+    
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0" style="font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: clamp(0.8rem, 1.2vw, 1rem);">
+                        &copy; 2024 ASL Sign Language Translation. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
     </footer>
 </body>
+
+
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+    
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+
+
 </html>

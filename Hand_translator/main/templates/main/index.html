@@ -2,33 +2,119 @@
 {% load static %}
 {% block title %}Home - ASL Sign Language Translation{% endblock %}
 {% block content %}
-<section id="home" class="section-padding">
+
+<section id="home" class="min-vh-100 d-flex align-items-center py-5 bg-light">
     <div class="container">
-        <h1 class="heading-primary">Welcome to ASL Sign Language Translation</h1>
-        <p class="lead">Bridging the gap between spoken language and American Sign Language.</p>
-    </div>
-</section>
-<section id="about-asl" class="section-padding">
-    <div class="container">
-        <h2 class="heading-secondary">About ASL</h2>
-        <p>American Sign Language (ASL) is a complete, natural language that serves as the predominant sign language of Deaf communities in the United States and most of Anglophone Canada. ASL is a visual language. With signing, the brain processes linguistic information through the eyes. The shape, placement, and movement of the hands, as well as facial expressions and body movements, all play important parts in conveying information.</p>
-    </div>
-</section>
-<section id="asl-images" class="section-padding">
-    <div class="container">
-        <h2 class="heading-secondary">ASL Sign Language Examples</h2>
-        <div class="image-gallery">
-            <img src="{% static 'main/images/ASL_LETTERS.png' %}" alt="ASL letter sign ">
-            <img src="{% static 'main/images/basicasl.jpg' %}" alt="ASL sign for Thank You">
-            <!-- <img src="{% static 'main/images/asl_love.jpg' %}" alt="ASL sign for Love">
-            <img src="{% static 'main/images/asl_friend.jpg' %}" alt="ASL sign for Friend"> -->
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div>
+                    <h1 class="text-dark" style="font-family: 'Lilita One', sans-serif; font-weight: 400; font-style: normal; font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 0.5rem;">
+                        Welcome to ASL <br /> Sign Language Translation
+                    </h1>
+                    <p class="text-dark" style="font-family: 'Quicksand', sans-serif; font-weight: 800; font-size: clamp(1rem, 2vw, 1.5rem); margin-bottom: 1rem;">
+                        Bridging the gap between spoken language and American Sign Language.
+                    </p>
+                    <a href="#about-asl" class="btn btn-dark" style="border-radius: 40px; font-size: clamp(0.8rem, 1.5vw, 1.2rem);">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex justify-content-center">
+                <img src="{% static 'images/ASL_LETTERS.png' %}" alt="ASL Sign Language" class="img-fluid" style="max-height: 70vh; object-fit: contain;">
+            </div>
         </div>
     </div>
 </section>
-<section id="translation-tools" class="section-padding">
+
+<section id="about-asl" class="min-vh-100 d-flex align-items-center py-5 bg-secondary text-white">
     <div class="container">
-        <h2 class="heading-secondary">Translation Tools</h2>
-        <p>Our ASL translation tools leverage advanced computer vision and machine learning techniques to recognize and translate ASL gestures into spoken and written language in real-time. These tools are designed to be accurate, efficient, and easy to use, making communication more accessible for everyone.</p>
+        <div class="row align-items-center">
+            <div class="col-lg-6 d-flex justify-content-center mt-4 mt-lg-0">
+                <video class="img-fluid" style="max-height: 70vh; object-fit: contain;" autoplay loop muted playsinline>
+                    <source src="{% static 'videos/Hello.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="col-lg-6">
+                <h2 style="font-family: 'Lilita One', sans-serif; font-weight: 400; font-style: normal; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1rem;">
+                    About ASL
+                </h2>
+                <p style="font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 1rem;">
+                    American Sign Language (ASL) is a complete, natural language that serves as the predominant sign language of Deaf communities in the United States and most of Anglophone Canada.
+                </p>
+                <p style="font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 1rem;">
+                    ASL is a visual language. With signing, the brain processes linguistic information through the eyes. The shape, placement, and movement of the hands, as well as facial expressions and body movements, all play important parts in conveying information.
+                </p>
+                <p style="font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 1rem;">
+                    ASL is not a form of English. It has its own distinct grammatical structure, which must be learned over time through study and practice. ASL is used predominantly in the United States and in many parts of Canada.
+                </p>
+                <a href="https://en.wikipedia.org/wiki/American_Sign_Language" class="btn btn-light mt-3" style="border-radius: 40px; font-size: clamp(0.8rem, 1.5vw, 1.2rem);">
+                    Learn More About ASL
+                </a>
+            </div>
+        </div>
     </div>
 </section>
+
+<section id="translation-tools" class="min-vh-100 d-flex align-items-center py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="text-dark text-center" style="font-family: 'Lilita One', sans-serif; font-weight: 400; font-style: normal; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1rem;">
+                    ENHANCING ACCESSIBILITY: SIGN LANGUAGE TRANSLATION
+                </h2>
+                <p class="text-dark" style="font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 1rem;">
+                    Our sign language translation system is a vital component in modern society, ensuring inclusion and equal opportunities for those with disabilities. We leverage advanced deep learning and neural network technologies to create accurate and efficient translation models.
+                </p>
+                <p class="text-dark" style="font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 1rem;">
+                    Using convolutional neural networks (CNNs) and recurrent neural networks (RNNs), our system translates sign language in real-time, considering factors such as accuracy, speed, and resource efficiency. We're also exploring innovative ways to integrate tactile input and audio information, making our tools accessible for those who are blind or deaf.
+                </p>
+                <div class="text-center">
+                    <a href="{% static 'pdf/sign_language_translation_research.pdf' %}" class="btn btn-dark mt-3" style="border-radius: 40px; font-size: clamp(0.8rem, 1.5vw, 1.2rem);" download>
+                        Download Our Research (PDF)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="asl-examples" class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-dark text-center mb-5" style="font-family: 'Lilita One', sans-serif; font-weight: 400; font-style: normal; font-size: clamp(2rem, 5vw, 3.5rem);">
+            ASL in Action
+        </h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{% static 'images/asl_example_1.jpg' %}" class="card-img-top" alt="ASL Example 1">
+                    <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'Quicksand', sans-serif; font-weight: 700;">Fingerspelling</h5>
+                        <p class="card-text" style="font-family: 'Quicksand', sans-serif;">Demonstrating the ASL alphabet through fingerspelling.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{% static 'images/asl_example_2.jpg' %}" class="card-img-top" alt="ASL Example 2">
+                    <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'Quicksand', sans-serif; font-weight: 700;">Common Phrases</h5>
+                        <p class="card-text" style="font-family: 'Quicksand', sans-serif;">Examples of frequently used ASL phrases and expressions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{% static 'images/asl_example_3.jpg' %}" class="card-img-top" alt="ASL Example 3">
+                    <div class="card-body">
+                        <h5 class="card-title" style="font-family: 'Quicksand', sans-serif; font-weight: 700;">ASL in Conversation</h5>
+                        <p class="card-text" style="font-family: 'Quicksand', sans-serif;">Illustrating how ASL is used in real-life conversations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

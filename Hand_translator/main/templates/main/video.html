@@ -4,27 +4,41 @@
 {% block title %}Upload Video - ASL Sign Language Translation{% endblock %}
 
 {% block content %}
-<section class="upload-section">
+<section class="upload-section py-5 " style="min-height: 40vh;">
     <div class="container">
-        <h1>Upload Video for ASL Translation</h1>
-        <form method="post" enctype="multipart/form-data" id="videoUploadForm">
-            {% csrf_token %}
-            <div class="file-input-wrapper">
-                <input type="file" name="video" id="videoInput" accept="video/*" required>
-                <label for="videoInput" class="file-input-label">Choose a video</label>
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h1 class="mb-0">Upload Video for ASL Translation</h1>
             </div>
-            <button type="submit" class="upload-btn">Upload and Translate</button>
-        </form>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="videoUploadForm">
+                    {% csrf_token %}
+                    <div class=" file-input-wrapper d-flex justify-content-center mb-3">
+                        <input type="file" class="d-none" name="video" id="videoInput" accept="video/*" required>
+                        <label for="videoInput" class="btn btn-secondary">Choose a video</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload and Translate</button>
+                </form>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="response-section">
+<section class="response-section py-5" style="min-height: 40vh;">
     <div class="container">
-        <h2>Translation Result</h2>
-        <div id="videoPreview" class="preview-container"></div>
-        <!-- <div id="translationResult" class="result-container"></div> -->
-        <pre id="predictions" ></pre>
-
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h2 class="mb-0">Translation Result</h2>
+            </div>
+            <div class="card-body">
+                <div id="videoPreview" class="mb-3"></div>
+                <pre id="predictions" class="bg-light p-3 rounded" style="min-height: 100px; overflow-y: auto;"></pre>
+            </div>
+            <div class="card-footer">
+                <button id="downloadTxt" class="btn btn-primary me-2">Download Text</button>
+                <button id="downloadAudio" class="btn btn-success">Download Audio</button>
+            </div>
+        </div>
     </div>
 </section>
 
