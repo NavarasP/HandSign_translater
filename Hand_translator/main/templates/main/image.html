@@ -4,7 +4,7 @@
 {% block title %}Upload Image - ASL Sign Language Translation{% endblock %}
 
 {% block content %}
-<section class="upload-section" style="min-height: 40vh;">
+<section class="upload-section" style="min-height: 70vh;">
     <div class="container mt-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -13,12 +13,28 @@
             <div class="card-body">
                 <form method="post" enctype="multipart/form-data" id="imageUploadForm">
                     {% csrf_token %}
-                    <div class="file-input-wrapper d-flex justify-content-center mb-3">
-                        <input type="file" name="image" id="imageInput" accept="image/*" required class="d-none">
-                        <label for="imageInput" class="btn btn-secondary">Choose an image</label>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary">Upload and Translate</button>
+                    <div class="row">
+                        <div class="col-md-6 d-flex flex-column align-items-center">
+                            <div id="imagePreview" class="preview-container mb-3">
+                                {% if form.instance.image %}
+                                <img src="{{ form.instance.image.url }}" class="img-fluid" alt="Uploaded Image">
+                                {% else %}
+                                <img src="{% static 'images\ASL_LETTERS.png' %}" class="img-fluid" alt="Placeholder Image">
+                                {% endif %}
+                            </div>
+                            <input type="file" name="image" id="imageInput" accept="image/*" required class="d-none">
+                            <label for="imageInput" class="btn btn-secondary">Choose an image</label>
+                        </div>
+                        <div class="col-md-6 d-flex flex-column align-items-center">
+                            <button type="submit" class="btn btn-primary mb-3">Upload and Translate</button>
+                            <pre id="predictions" class="bg-light p-3 rounded" style="min-height: 100px; max-height: 150px; overflow-y: auto; width: 100%;">
+                                {% if label %}
+                                Predicted sign: {{ label }}
+                                {% else %}
+                                Waiting for prediction...
+                                {% endif %}
+                            </pre>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -26,74 +42,13 @@
     </div>
 </section>
 
-<section class="response-section" style="min-height: 40vh;">
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header bg-secondary text-white">
-                <h2 class="mb-0">Translation Result</h2>
-            </div>
-            <div class="card-body">
-                <div id="imagePreview" class="preview-container d-flex justify-content-center mb-3"></div>
-                <pre id="predictions" class="bg-light p-3 rounded" style="min-height: 100px; overflow-y: auto;"></pre>
-            </div>
-        </div>
-    </div>
-</section>
 <script>
-//     document.getElementById('imageUploadForm').addEventListener('submit', function(e) {
-//         e.preventDefault();
-//         var formData = new FormData(this);
-
-//         fetch('{% url "process_image" %}', {
-//             method: 'POST',
-//             body: formData,
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             document.getElementById('imagePreview').innerHTML = `<img src="${URL.createObjectURL(document.getElementById('imageInput').files[0])}" alt="Uploaded Image">`;
-//             document.getElementById('translationResult').textContent = data.translation;
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//         });
-//     });
-
-//     document.getElementById('imageInput').addEventListener('change', function(e) {
-//         document.querySelector('.file-input-label').textContent = this.files[0].name;
-//     });
-// 
-
-function startEventSource() {
-        console.log("Attempting to create EventSource");
-
-        const url = "{% url 'stream_predictions' %}";
-        console.log("EventSource URL:", url);
-
-        try {
-            const eventSource = new EventSource(url);
-
-            eventSource.onmessage = function(event) {
-                console.log("Message received:", event.data);
-                document.getElementById('predictions').innerText = event.data;
-            };
-
-            eventSource.onerror = function(event) {
-                console.error("EventSource error:", event);
-                // Attempt to reconnect after 1 second
-                eventSource.close();
-                setTimeout(startEventSource, 1000);
-            };
-
-            eventSource.onopen = function(event) {
-                console.log("EventSource connection opened:", event);
-            };
-
-        } catch (error) {
-            console.error("Error creating EventSource:", error);
-        }
+document.getElementById('imageInput').onchange = function(event) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '" class="img-fluid" />';
     }
-
-    document.addEventListener('DOMContentLoaded', startEventSource);
-
+    reader.readAsDataURL(event.target.files[0]);
+};
 </script>
 {% endblock %}

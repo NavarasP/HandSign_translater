@@ -222,7 +222,7 @@ def generate_frames():
                             
                             print(f"Predicted sign: {label} with confidence {confidence:.2f}")
 
-                            with open('predicted_labels.txt', 'a') as file:
+                            with open('predicted_labels_live.txt', 'a') as file:
                                 file.write(label)
 
                     else:
@@ -232,7 +232,7 @@ def generate_frames():
                     if current_time - last_prediction_time >= 3:
                         no_prediction_counter += 1
                         last_prediction_time = current_time
-                        with open('predicted_labels.txt', 'a') as file:
+                        with open('predicted_labels_live.txt', 'a') as file:
                             file.write(' ')
 
             ret, buffer = cv2.imencode('.jpg', frame)
@@ -242,3 +242,74 @@ def generate_frames():
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
+
+import cv2
+import numpy as np
+
+def process_image(image_path):
+    # Load the image from the file path
+    image = cv2.imread(image_path)
+
+    # Resize the image to 640x480
+    frame = cv2.resize(image, (640, 480))
+
+    # Flip the image horizontally
+    frame = cv2.flip(frame, 1)
+
+    # Extract landmarks using MediaPipe
+    left_hand, right_hand, pose, face = extract_landmarks_mediapipe(frame)
+
+    # Check if landmarks for left or right hand are detected
+    if left_hand or right_hand:
+        # Preprocess landmarks for model input
+        df = landmarks_to_df(left_hand, right_hand, pose, face, header)
+        left_hand_input, right_hand_input, pose_input = preprocess_landmarks(df)
+
+        # Make a prediction using the loaded model
+        prediction = loaded_model.predict([left_hand_input, right_hand_input, pose_input])
+
+        # Ensure the prediction doesn't contain NaN values
+        if not np.isnan(prediction).any():
+            # Get the predicted class index and label
+            predicted_class_index = np.argmax(prediction, axis=1)
+            predicted_class_label = label_encoder.inverse_transform(predicted_class_index)
+            confidence = prediction[0, predicted_class_index][0]
+
+            # Return the label if confidence is above 0.95
+            if confidence > 0.95:
+                label = predicted_class_label[0]  # Assuming a single prediction per image
+                return label
+            else:
+                label ='No sign found'
+                return label
+        else:
+            label = "Prediction contains NaN values"
+            return label  # No valid prediction
+    else:
+        label = "No hand detected"
+        return label # No hand detected, hence no prediction
+
+
+
+def process_video(video_path):
+    cap = cv2.VideoCapture(video_path)
+    labels = []
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Resize the frame to 640x480
+        frame = cv2.resize(frame, (640, 480))
+
+        # Process the frame to extract landmarks and predict labels
+        label, confidence = process_image(frame)
+        
+        if label and confidence > 0.95:
+            labels.append(label)
+            with open('predicted_labels_live.txt', 'a') as file:
+                file.write(f'{label}\n')
+
+    cap.release()
+    return labels

@@ -5,9 +5,15 @@ import tempfile
 from gtts import gTTS
 from django.shortcuts import render
 from django.http import HttpResponse
-from main.functions import generate_frames
+from main.functions import generate_frames, process_image
 from django.http import StreamingHttpResponse
-
+from django.shortcuts import render
+from django.http import JsonResponse
+from .forms import ImageUploadForm
+import cv2
+import numpy as np
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 
 
@@ -18,21 +24,73 @@ def login(request):
     # Implement this view
     return render(request, 'main/login.html')
 
-def upload_image(request):
-    # Implement this view
-    return render(request, 'main/image.html')
 
-def process_image(request):
-    # Implement this view
-    pass
+def upload_image(request):
+    label = None
+
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Define a default filename for the uploaded image
+            default_filename = 'dump/uploaded_image.jpg'
+
+            # Save the uploaded image with the default filename
+            image = form.cleaned_data['image']
+            fs = FileSystemStorage()
+            filename = fs.save(default_filename, image)
+
+            # Open the saved image for processing
+            image_path = os.path.join(settings.MEDIA_ROOT, filename)
+            label = process_image(image_path)
+
+            # Return the response with the label and the image URL
+            uploaded_file_url = fs.url(filename)
+            return render(request, 'main/image.html', {'form': form, 'label': label, 'image_url': uploaded_file_url})
+
+    else:
+        form = ImageUploadForm()
+
+    return render(request, 'main/image.html', {'form': form, 'label': label})
+
+
+
+
+import os
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render
+from .forms import VideoUploadForm
+from .functions import process_video
 
 def upload_video(request):
-    # Implement this view
-    return render(request, 'main/video.html')
+    label = None
+    video_filename = 'dump/uploaded_video.mp4'  # Default filename for the video
 
-def process_video(request):
-    # Implement this view
-    pass
+    if request.method == 'POST':
+        form = VideoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Save the uploaded video with a default filename
+            video = form.cleaned_data['video']
+            fs = FileSystemStorage()
+            filename = fs.save(video_filename, video)
+            uploaded_file_url = fs.url(filename)
+
+            # Open the saved video for processing
+            video_path = os.path.join(settings.MEDIA_ROOT, video_filename)
+            label = process_video(video_path)
+
+            # Clean up the saved video file after processing if necessary
+            # os.remove(video_path)
+
+            return render(request, 'main/video.html', {'form': form, 'label': label, 'video_url': uploaded_file_url})
+
+    else:
+        form = VideoUploadForm()
+
+    return render(request, 'main/video.html', {'form': form, 'label': label})
+
+
+
 
 def live_video(request):
     # Implement this view
