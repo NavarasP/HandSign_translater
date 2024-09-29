@@ -64,7 +64,7 @@ from .functions import process_video
 
 def upload_video(request):
     label = None
-    video_filename = 'dump/uploaded_video.mp4'  # Default filename for the video
+    video_filename = 'dump/uploaded_video.mp4'  
 
     if request.method == 'POST':
         form = VideoUploadForm(request.POST, request.FILES)
@@ -113,7 +113,7 @@ def stream_predictions(request):
         last_sent_data = ""
         while True:
             try:
-                with open('predicted_labels.txt', 'r') as file:
+                with open('predicted_labels_live.txt', 'r') as file:
                     data = file.read().replace('[', '').replace(']', '').replace("'", "").replace('"', '').strip()
                     if data and data != last_sent_data:
                         last_sent_data = data

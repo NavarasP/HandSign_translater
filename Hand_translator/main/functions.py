@@ -32,10 +32,8 @@ def extract_landmarks_mediapipe(frame):
     with mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5) as hands:
         with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
             with mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
-                # Convert BGR to RGB
                 frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 
-                # Process hand landmarks
                 hands_results = hands.process(frame_rgb)
                 left_hand_landmarks, right_hand_landmarks = [],[]
                 if hands_results.multi_hand_landmarks:
@@ -45,12 +43,9 @@ def extract_landmarks_mediapipe(frame):
                         elif handedness.classification[0].label == 'Right':
                             right_hand_landmarks = hand_landmarks
 
-                # Process pose landmarks
                 pose_results = pose.process(frame_rgb)
                 pose_landmarks = pose_results.pose_landmarks
 
-
-                # Process face landmarks
                 face_results = face_mesh.process(frame_rgb)
                 face_landmarks = face_results.multi_face_landmarks
 
@@ -80,74 +75,58 @@ header =      [f"{col}_{coord}" for col in face_columns for coord in ['x', 'y']]
 
 
 def landmarks_to_df(left_hand_landmarks, right_hand_landmarks, pose_landmarks, face_landmarks, header):
-    # Initialize dictionaries to store landmark data
     landmarks_data = {}
 
-    # Process face landmarks
     if face_landmarks:
         for i, landmark_list in enumerate(face_landmarks):
             for j, lm in enumerate(landmark_list.landmark):
                 landmarks_data[f"face_{j}_x"] = lm.x
                 landmarks_data[f"face_{j}_y"] = lm.y
-            # Fill missing face landmarks with zeros
             for j in range(len(landmark_list.landmark), max_face_index + 1):
                 landmarks_data[f"face_{j}_x"] = 0.0
                 landmarks_data[f"face_{j}_y"] = 0.0
     else:
-        # Fill all face landmarks with zeros if face_landmarks is None
         for j in range(max_face_index + 1):
             landmarks_data[f"face_{j}_x"] = 0.0
             landmarks_data[f"face_{j}_y"] = 0.0
 
-    # Process left hand landmarks
     if left_hand_landmarks:
         for i, lm in enumerate(left_hand_landmarks.landmark):
             landmarks_data[f"left_hand_{i}_x"] = lm.x
             landmarks_data[f"left_hand_{i}_y"] = lm.y
-        # Fill missing left hand landmarks with zeros
         for i in range(len(left_hand_landmarks.landmark), max_left_hand_index + 1):
             landmarks_data[f"left_hand_{i}_x"] = 0.0
             landmarks_data[f"left_hand_{i}_y"] = 0.0
     else:
-        # Fill all left hand landmarks with zeros if left_hand_landmarks is None
         for i in range(max_left_hand_index + 1):
             landmarks_data[f"left_hand_{i}_x"] = 0.0
             landmarks_data[f"left_hand_{i}_y"] = 0.0
 
-    # Process right hand landmarks
     if right_hand_landmarks:
         for i, lm in enumerate(right_hand_landmarks.landmark):
             landmarks_data[f"right_hand_{i}_x"] = lm.x
             landmarks_data[f"right_hand_{i}_y"] = lm.y
-        # Fill missing right hand landmarks with zeros
         for i in range(len(right_hand_landmarks.landmark), max_right_hand_index + 1):
             landmarks_data[f"right_hand_{i}_x"] = 0.0
             landmarks_data[f"right_hand_{i}_y"] = 0.0
     else:
-        # Fill all right hand landmarks with zeros if right_hand_landmarks is None
         for i in range(max_right_hand_index + 1):
             landmarks_data[f"right_hand_{i}_x"] = 0.0
             landmarks_data[f"right_hand_{i}_y"] = 0.0
 
-    # Process pose landmarks
     if pose_landmarks:
         for i, lm in enumerate(pose_landmarks.landmark):
             landmarks_data[f"pose_{i}_x"] = lm.x
             landmarks_data[f"pose_{i}_y"] = lm.y
-        # Fill missing pose landmarks with zeros
         for i in range(len(pose_landmarks.landmark), max_pose_index + 1):
             landmarks_data[f"pose_{i}_x"] = 0.0
             landmarks_data[f"pose_{i}_y"] = 0.0
     else:
-        # Fill all pose landmarks with zeros if pose_landmarks is None
         for i in range(max_pose_index + 1):
             landmarks_data[f"pose_{i}_x"] = 0.0
             landmarks_data[f"pose_{i}_y"] = 0.0
 
-    # Create DataFrame from extracted landmark data
     df = pd.DataFrame([landmarks_data], columns=header)
-
-
     return df
 
 def preprocess_landmarks(df):
@@ -155,16 +134,13 @@ def preprocess_landmarks(df):
     right_hand_columns = [col for col in df.columns if col.startswith('right_hand')]
     pose_columns = [col for col in df.columns if col.startswith('pose')]
 
-    # Ensure the data is in the correct shape (number_of_samples, number_of_frames, number_of_features_per_frame)
     def reshape_data(df, columns, num_frames):
         data = df[columns].values
         num_samples = len(df) // num_frames
         data = data.reshape(num_samples, num_frames, len(columns))
         return data
 
-
-    # Assuming num_frames is known
-    num_frames = 1 # This should be the length of the time series
+    num_frames = 1 
 
     left_hand_data = reshape_data(df, left_hand_columns, num_frames)
     right_hand_data = reshape_data(df, right_hand_columns, num_frames)
@@ -193,21 +169,16 @@ def generate_frames():
             print('not success')
             break
         else:
-            frame = cv2.flip(frame, 1)  # Flip the frame horizontally
-
-            # Extract landmarks using MediaPipe
+            frame = cv2.flip(frame, 1) 
             left_hand, right_hand, pose, face = extract_landmarks_mediapipe(frame)
 
             current_time = time.time()
-            if current_time - prev_time >= 1:  # Process frame every second
+            if current_time - prev_time >= 1: 
                 prev_time = current_time
 
                 if left_hand or right_hand:
-                    # Preprocess landmarks
                     df = landmarks_to_df(left_hand, right_hand, pose, face, header)
                     left_hand_input, right_hand_input, pose_input = preprocess_landmarks(df)
-
-                    # Make prediction
                     prediction = loaded_model.predict([left_hand_input, right_hand_input, pose_input])
 
                     if not np.isnan(prediction).any():
@@ -218,7 +189,7 @@ def generate_frames():
                         if confidence > 0.95:
                             no_prediction_counter = 0
                             last_prediction_time = current_time
-                            label = predicted_class_label[0]  # Assuming single prediction per frame
+                            label = predicted_class_label[0]  
                             
                             print(f"Predicted sign: {label} with confidence {confidence:.2f}")
 
@@ -247,47 +218,33 @@ import cv2
 import numpy as np
 
 def process_image(image_path):
-    # Load the image from the file path
     image = cv2.imread(image_path)
-
-    # Resize the image to 640x480
     frame = cv2.resize(image, (640, 480))
-
-    # Flip the image horizontally
     frame = cv2.flip(frame, 1)
-
-    # Extract landmarks using MediaPipe
     left_hand, right_hand, pose, face = extract_landmarks_mediapipe(frame)
 
-    # Check if landmarks for left or right hand are detected
     if left_hand or right_hand:
-        # Preprocess landmarks for model input
         df = landmarks_to_df(left_hand, right_hand, pose, face, header)
         left_hand_input, right_hand_input, pose_input = preprocess_landmarks(df)
-
-        # Make a prediction using the loaded model
         prediction = loaded_model.predict([left_hand_input, right_hand_input, pose_input])
-
-        # Ensure the prediction doesn't contain NaN values
+        
         if not np.isnan(prediction).any():
-            # Get the predicted class index and label
             predicted_class_index = np.argmax(prediction, axis=1)
             predicted_class_label = label_encoder.inverse_transform(predicted_class_index)
             confidence = prediction[0, predicted_class_index][0]
 
-            # Return the label if confidence is above 0.95
             if confidence > 0.95:
-                label = predicted_class_label[0]  # Assuming a single prediction per image
+                label = predicted_class_label[0]  
                 return label
             else:
                 label ='No sign found'
                 return label
         else:
             label = "Prediction contains NaN values"
-            return label  # No valid prediction
+            return label  
     else:
         label = "No hand detected"
-        return label # No hand detected, hence no prediction
+        return label 
 
 
 
@@ -300,10 +257,7 @@ def process_video(video_path):
         if not ret:
             break
 
-        # Resize the frame to 640x480
         frame = cv2.resize(frame, (640, 480))
-
-        # Process the frame to extract landmarks and predict labels
         label, confidence = process_image(frame)
         
         if label and confidence > 0.95:

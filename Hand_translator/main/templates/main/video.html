@@ -21,6 +21,9 @@
                                     <source src="{{ form.instance.video.url }}" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
+                                {% else %}
+                                <img src="{% static 'images\howtousevideo.jpg' %}" class="img-fluid" alt="Placeholder Image">
+                            
                                 {% endif %}
                             </div>
                             <input type="file" name="video" id="videoInput" accept="video/*" required class="d-none">

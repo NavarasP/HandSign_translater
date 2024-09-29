@@ -19,7 +19,7 @@
                                 {% if form.instance.image %}
                                 <img src="{{ form.instance.image.url }}" class="img-fluid" alt="Uploaded Image">
                                 {% else %}
-                                <img src="{% static 'images\ASL_LETTERS.png' %}" class="img-fluid" alt="Placeholder Image">
+                                <img src="{% static 'images\howtouseimage.jpg' %}" class="img-fluid" alt="Placeholder Image">
                                 {% endif %}
                             </div>
                             <input type="file" name="image" id="imageInput" accept="image/*" required class="d-none">
